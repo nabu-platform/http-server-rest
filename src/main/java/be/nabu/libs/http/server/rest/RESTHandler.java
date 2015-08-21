@@ -22,12 +22,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.SecurityContext;
 
+import be.nabu.libs.authentication.api.RoleHandler;
 import be.nabu.libs.events.api.EventHandler;
 import be.nabu.libs.http.HTTPException;
 import be.nabu.libs.http.api.HTTPRequest;
 import be.nabu.libs.http.api.HTTPResponse;
 import be.nabu.libs.http.api.server.AuthenticationHeader;
-import be.nabu.libs.http.api.server.RoleHandler;
 import be.nabu.libs.http.api.server.SecurityHeader;
 import be.nabu.libs.http.core.HTTPUtils;
 import be.nabu.libs.http.core.ServerHeader;
@@ -90,7 +90,7 @@ public class RESTHandler implements EventHandler<HTTPRequest, HTTPResponse> {
 					@Override
 					public Principal getUserPrincipal() {
 						AuthenticationHeader authenticationHeader = HTTPUtils.getAuthenticationHeader(request);
-						return authenticationHeader == null ? null : authenticationHeader.getPrincipal();
+						return authenticationHeader == null ? null : authenticationHeader.getToken();
 					}
 					@Override
 					public boolean isSecure() {
@@ -103,7 +103,7 @@ public class RESTHandler implements EventHandler<HTTPRequest, HTTPResponse> {
 							return false;
 						}
 						AuthenticationHeader authenticationHeader = HTTPUtils.getAuthenticationHeader(request);
-						return authenticationHeader != null && roleHandler.isUserInRole(authenticationHeader.getPrincipal(), role);
+						return authenticationHeader != null && roleHandler.hasRole(authenticationHeader.getToken(), role);
 					}
 				});
 			}

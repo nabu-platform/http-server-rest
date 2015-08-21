@@ -1,10 +1,10 @@
 package be.nabu.libs.http.server.rest;
 
+import be.nabu.libs.authentication.api.RoleHandler;
 import be.nabu.libs.events.api.EventHandler;
 import be.nabu.libs.http.api.HTTPRequest;
 import be.nabu.libs.http.api.HTTPResponse;
 import be.nabu.libs.http.api.server.HTTPServer;
-import be.nabu.libs.http.api.server.RoleHandler;
 import be.nabu.libs.http.server.HTTPServerUtils;
 
 public class HTTPServerRESTUtils {
