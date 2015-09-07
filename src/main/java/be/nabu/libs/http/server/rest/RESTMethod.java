@@ -167,7 +167,7 @@ public class RESTMethod {
 			else if (parameter instanceof Class) {
 				Object unmarshalled = null;
 				if (request instanceof ContentPart) {
-					List<String> allowedContentTypes = consumes == null ? Arrays.asList(MediaType.APPLICATION_XML) : Arrays.asList(consumes);
+					List<String> allowedContentTypes = consumes == null ? Arrays.asList(MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON) : Arrays.asList(consumes);
 					if (contentType != null && !allowedContentTypes.contains(contentType)) {
 						throw new HTTPException(400, "Invalid content type");
 					}
@@ -212,7 +212,7 @@ public class RESTMethod {
 			String responseType;
 			
 			if (response instanceof ComplexContent || simpleTypeWrapper.wrap(response.getClass()) == null) {
-				List<String> allowedResponseTypes = produces == null ? Arrays.asList(MediaType.APPLICATION_XML) : Arrays.asList(produces);
+				List<String> allowedResponseTypes = produces == null ? Arrays.asList(MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON) : Arrays.asList(produces);
 				Header acceptHeader = MimeUtils.getHeader("Accept", request.getContent().getHeaders());
 				responseType = acceptHeader != null && allowedResponseTypes.contains(acceptHeader.getValue()) ? acceptHeader.getValue() : allowedResponseTypes.get(0);
 				MarshallableBinding binding = MediaType.APPLICATION_JSON.equals(responseType) 
