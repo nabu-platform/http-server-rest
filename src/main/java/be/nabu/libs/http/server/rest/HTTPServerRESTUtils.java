@@ -14,7 +14,7 @@ public class HTTPServerRESTUtils {
 	}
 	
 	public static void handleRest(HTTPServer server, Class<?> restClass, String serverPath, RoleHandler roleHandler, Object...context) {
-		server.getEventDispatcher().subscribe(HTTPRequest.class, restHandler(restClass, serverPath, roleHandler, context))
+		server.getDispatcher(null).subscribe(HTTPRequest.class, restHandler(restClass, serverPath, roleHandler, context))
 			.filter(HTTPServerUtils.limitToPath(serverPath));
 	}
 }
