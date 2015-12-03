@@ -192,17 +192,17 @@ public class RESTMethod {
 		}
 		Object response = method.invoke(restHandler.newInstance(request), arguments.toArray());
 		if (response instanceof byte[]) {
-			return HTTPUtils.newResponse(produces == null ? MediaType.APPLICATION_OCTET_STREAM : produces[0], IOUtils.wrap((byte[]) response, true));
+			return HTTPUtils.newResponse(request, produces == null ? MediaType.APPLICATION_OCTET_STREAM : produces[0], IOUtils.wrap((byte[]) response, true));
 		}
 		else if (response instanceof InputStream) {
-			return HTTPUtils.newResponse(produces == null ? MediaType.APPLICATION_OCTET_STREAM : produces[0], IOUtils.wrap((InputStream) response));
+			return HTTPUtils.newResponse(request, produces == null ? MediaType.APPLICATION_OCTET_STREAM : produces[0], IOUtils.wrap((InputStream) response));
 		}
 		else if (response instanceof String) {
-			return HTTPUtils.newResponse(produces == null ? MediaType.TEXT_PLAIN : produces[0], IOUtils.wrap(((String) response).getBytes(), true));
+			return HTTPUtils.newResponse(request, produces == null ? MediaType.TEXT_PLAIN : produces[0], IOUtils.wrap(((String) response).getBytes(), true));
 		}
 		// if it's already a part, you did all the heavy lifting
 		else if (response instanceof Part) {
-			return new DefaultHTTPResponse(200, "OK", MimeUtils.wrapModifiable((Part) response));
+			return new DefaultHTTPResponse(request, 200, "OK", MimeUtils.wrapModifiable((Part) response));
 		}
 		else if (response instanceof HTTPResponse) {
 			return (HTTPResponse) response;
@@ -230,10 +230,10 @@ public class RESTMethod {
 				content = ((Marshallable) resolved).marshal(response).getBytes();
 				responseType = "text/plain";
 			}
-			return HTTPUtils.newResponse(responseType, IOUtils.wrap(content, true));
+			return HTTPUtils.newResponse(request, responseType, IOUtils.wrap(content, true));
 		}
 		else {
-			return HTTPUtils.newEmptyResponse();
+			return HTTPUtils.newEmptyResponse(request);
 		}
 	}
 	
