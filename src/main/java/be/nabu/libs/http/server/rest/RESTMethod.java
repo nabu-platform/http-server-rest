@@ -146,7 +146,7 @@ public class RESTMethod {
 				arguments.add(header == null ? null : header.getValue());
 			}
 			else if (parameter instanceof PathParam) {
-				arguments.add(pathValues.get(((PathParam) parameter).value()));
+				arguments.add(URIUtils.decodeURIComponent(pathValues.get(((PathParam) parameter).value())));
 			}
 			else if (parameter instanceof Class && InputStream.class.equals((Class) parameter)) {
 				arguments.add(request.getContent() instanceof ContentPart ? IOUtils.toInputStream(((ContentPart) request.getContent()).getReadable()) : null);
