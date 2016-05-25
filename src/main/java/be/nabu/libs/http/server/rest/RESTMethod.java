@@ -52,6 +52,8 @@ import be.nabu.libs.types.binding.xml.XMLBinding;
 import be.nabu.libs.types.java.BeanInstance;
 import be.nabu.libs.types.java.BeanResolver;
 import be.nabu.utils.io.IOUtils;
+import be.nabu.utils.io.api.ByteBuffer;
+import be.nabu.utils.io.api.ReadableContainer;
 import be.nabu.utils.mime.api.ContentPart;
 import be.nabu.utils.mime.api.Header;
 import be.nabu.utils.mime.api.Part;
@@ -149,7 +151,8 @@ public class RESTMethod {
 				arguments.add(URIUtils.decodeURIComponent(pathValues.get(((PathParam) parameter).value())));
 			}
 			else if (parameter instanceof Class && InputStream.class.equals((Class) parameter)) {
-				arguments.add(request.getContent() instanceof ContentPart ? IOUtils.toInputStream(((ContentPart) request.getContent()).getReadable()) : null);
+				ReadableContainer<ByteBuffer> readable = request.getContent() instanceof ContentPart ? ((ContentPart) request.getContent()).getReadable() : null;
+				arguments.add(readable == null ? null : IOUtils.toInputStream(readable));
 			}
 			else if (parameter instanceof Class && byte[].class.isAssignableFrom((Class) parameter)) {
 				arguments.add(request.getContent() instanceof ContentPart ? IOUtils.toBytes(((ContentPart) request.getContent()).getReadable()) : null);
