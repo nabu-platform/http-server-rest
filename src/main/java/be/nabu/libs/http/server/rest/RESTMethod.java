@@ -169,7 +169,7 @@ public class RESTMethod {
 			// we assume it's an interpreted object that is in the body
 			else if (parameter instanceof Class) {
 				Object unmarshalled = null;
-				if (request instanceof ContentPart) {
+				if (request.getContent() instanceof ContentPart) {
 					List<String> allowedContentTypes = consumes == null ? Arrays.asList(MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON) : Arrays.asList(consumes);
 					if (contentType != null && !allowedContentTypes.contains(contentType)) {
 						throw new HTTPException(400, "Invalid content type");
@@ -177,7 +177,8 @@ public class RESTMethod {
 					UnmarshallableBinding binding = MediaType.APPLICATION_JSON.equals(contentType == null ? allowedContentTypes.get(0) : contentType) 
 						? new JSONBinding((ComplexType) BeanResolver.getInstance().resolve((Class<?>) parameter))
 						: new XMLBinding((ComplexType) BeanResolver.getInstance().resolve((Class<?>) parameter), Charset.defaultCharset());
-					unmarshalled = binding.unmarshal(IOUtils.toInputStream(((ContentPart) request).getReadable()), new Window[0]);
+					unmarshalled = binding.unmarshal(IOUtils.toInputStream(((ContentPart) request.getContent()).getReadable()), new Window[0]);
+					unmarshalled = ((BeanInstance) unmarshalled).getUnwrapped();
 				}
 				arguments.add(unmarshalled);
 			}
