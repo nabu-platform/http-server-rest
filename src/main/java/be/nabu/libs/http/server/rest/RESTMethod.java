@@ -235,7 +235,19 @@ public class RESTMethod {
 			if (response instanceof ComplexContent || simpleTypeWrapper.wrap(response.getClass()) == null) {
 				List<String> allowedResponseTypes = produces == null ? Arrays.asList(MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON) : Arrays.asList(produces);
 				Header acceptHeader = MimeUtils.getHeader("Accept", request.getContent().getHeaders());
-				responseType = acceptHeader != null && allowedResponseTypes.contains(acceptHeader.getValue()) ? acceptHeader.getValue() : allowedResponseTypes.get(0);
+				if (acceptHeader != null && allowedResponseTypes.contains(acceptHeader.getValue())) {
+					responseType = acceptHeader.getValue();
+				}
+				// match the incoming type if nothing is specified
+				else if (contentType != null && allowedResponseTypes.contains(contentType)) {
+					responseType = contentType;
+				}
+				else if (restHandler.getDefaultResponseType() != null && allowedResponseTypes.contains(restHandler.getDefaultResponseType())) {
+					responseType = restHandler.getDefaultResponseType();
+				}
+				else {
+					responseType = allowedResponseTypes.get(0);
+				}
 				MarshallableBinding binding = MediaType.APPLICATION_JSON.equals(responseType) 
 					? new JSONBinding((ComplexType) (response instanceof ComplexContent ? ((ComplexContent) response).getType() : BeanResolver.getInstance().resolve(response.getClass())))
 					: new XMLBinding((ComplexType) (response instanceof ComplexContent ? ((ComplexContent) response).getType() : BeanResolver.getInstance().resolve(response.getClass())), Charset.defaultCharset());

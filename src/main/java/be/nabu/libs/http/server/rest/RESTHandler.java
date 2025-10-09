@@ -61,6 +61,8 @@ public class RESTHandler implements EventHandler<HTTPRequest, HTTPResponse> {
 	private List<Field> contextFields;
 	private RoleHandler roleHandler;
 	private Map<String, RESTMethod> methods = new HashMap<String, RESTMethod>();
+	// for backwards compatibility
+	private String defaultResponseType;
 
 	public RESTHandler(String applicationPath, Class<?> restClass, RoleHandler roleHandler, Object...context) {
 		this.roleHandler = roleHandler;
@@ -221,5 +223,13 @@ public class RESTHandler implements EventHandler<HTTPRequest, HTTPResponse> {
 		catch (FormatException e) {
 			throw new HTTPException(500, e);
 		}
+	}
+
+	public String getDefaultResponseType() {
+		return defaultResponseType;
+	}
+
+	public void setDefaultResponseType(String defaultResponseType) {
+		this.defaultResponseType = defaultResponseType;
 	}
 }
