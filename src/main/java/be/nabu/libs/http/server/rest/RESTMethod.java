@@ -194,6 +194,11 @@ public class RESTMethod {
 					UnmarshallableBinding binding = MediaType.APPLICATION_JSON.equals(contentType == null ? allowedContentTypes.get(0) : contentType) 
 						? new JSONBinding((ComplexType) BeanResolver.getInstance().resolve((Class<?>) parameter))
 						: new XMLBinding((ComplexType) BeanResolver.getInstance().resolve((Class<?>) parameter), Charset.defaultCharset());
+					if (binding instanceof JSONBinding) {
+						((JSONBinding) binding).setEnableMapSupport(true);
+						// allow elements we don't know, needed to allow this in maps...
+						((JSONBinding) binding).setAllowDynamicElements(true);
+					}
 					unmarshalled = binding.unmarshal(IOUtils.toInputStream(((ContentPart) request.getContent()).getReadable()), new Window[0]);
 					unmarshalled = ((BeanInstance) unmarshalled).getUnwrapped();
 				}
