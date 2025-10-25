@@ -149,7 +149,7 @@ public class RESTHandler implements EventHandler<HTTPRequest, HTTPResponse> {
 	public String getClassPath() {
 		return classPath;
 	}
-
+	
 	@Override
 	public HTTPResponse handle(HTTPRequest request) {
 		// can not (currently) handle requests that have no content
