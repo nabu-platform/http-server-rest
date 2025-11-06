@@ -68,6 +68,7 @@ import be.nabu.libs.types.binding.json.JSONBinding;
 import be.nabu.libs.types.binding.xml.XMLBinding;
 import be.nabu.libs.types.java.BeanInstance;
 import be.nabu.libs.types.java.BeanResolver;
+import be.nabu.libs.types.map.MapType;
 import be.nabu.utils.io.IOUtils;
 import be.nabu.utils.io.api.ByteBuffer;
 import be.nabu.utils.io.api.ReadableContainer;
@@ -183,6 +184,7 @@ public class RESTMethod {
 			else if (parameter instanceof Class && (Part.class.equals(parameter) || request.getContent().getClass().equals(parameter))) {
 				arguments.add(request.getContent());
 			}
+			// TODO: should add support for lists...
 			// we assume it's an interpreted object that is in the body
 			else if (parameter instanceof Class) {
 				Object unmarshalled = null;
@@ -198,6 +200,9 @@ public class RESTMethod {
 						((JSONBinding) binding).setEnableMapSupport(true);
 						// allow elements we don't know, needed to allow this in maps...
 						((JSONBinding) binding).setAllowDynamicElements(true);
+						((JSONBinding) binding).setIgnoreRootIfArrayWrapper(true);
+						// does not work well with the enable map support! we don't add dynamic keys then!
+//						((JSONBinding) binding).setIgnoreUnknownElements(true);
 					}
 					unmarshalled = binding.unmarshal(IOUtils.toInputStream(((ContentPart) request.getContent()).getReadable()), new Window[0]);
 					unmarshalled = ((BeanInstance) unmarshalled).getUnwrapped();
